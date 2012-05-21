@@ -9,7 +9,7 @@
 <link href="style.css" rel="stylesheet" type="text/css" />
 <script type="text/javascript" src="filter.js"></script>
 </head>
-<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,ua.edu.ChaliyLukyanov.laba3.model.DAO.*,java.util.List"%>
+<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,java.util.List"%>
 <%@ page errorPage="error.jsp"%>
 
 <body onload="init()">

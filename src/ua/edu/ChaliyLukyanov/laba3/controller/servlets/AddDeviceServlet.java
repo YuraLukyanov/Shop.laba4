@@ -13,7 +13,7 @@ import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 import ua.edu.ChaliyLukyanov.laba3.model.Device;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.DeviceDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceRemote;
 
 
 public class AddDeviceServlet extends HttpServlet {
@@ -22,7 +22,7 @@ public class AddDeviceServlet extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DeviceDAO model = (DeviceDAO) request.getAttribute(Application.DEVICE_DAO);
+		DeviceRemote model = (DeviceRemote) request.getAttribute(Application.DEVICE_DAO);
 		try {
 			String title = request.getParameter("title");
 			

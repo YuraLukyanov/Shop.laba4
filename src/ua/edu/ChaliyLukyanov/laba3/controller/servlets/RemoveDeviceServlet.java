@@ -13,7 +13,7 @@ import org.apache.log4j.Logger;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.*;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 
 
 public class RemoveDeviceServlet extends HttpServlet {
@@ -21,7 +21,7 @@ public class RemoveDeviceServlet extends HttpServlet {
 	private static Logger logger=Logger.getLogger("Shoplogger");
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DeviceDAO model = (DeviceDAO) request.getAttribute(Application.DEVICE_DAO);
+		DeviceRemote model = (DeviceRemote) request.getAttribute(Application.DEVICE_DAO);
 		try {
 			Enumeration<String> names = (Enumeration<String>)request.getParameterNames();
 			while(names.hasMoreElements()) {

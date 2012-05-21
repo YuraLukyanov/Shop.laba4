@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
 
 
 public class ShowComponentsServlet extends HttpServlet {
@@ -23,7 +23,7 @@ public class ShowComponentsServlet extends HttpServlet {
    
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		ComponentDAO model = (ComponentDAO) request.getAttribute(Application.COMPONENT_DAO);
+		ComponentRemote model = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
 		try {
 			List<Component> components = model.getAllComponents();
 			List<String> producers = model.getDistinctProducers();

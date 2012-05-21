@@ -15,7 +15,7 @@ import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchComponentException;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
 
 public class ShowComponentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class ShowComponentServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		int id = Integer.parseInt(request.getParameter("id"));
-		ComponentDAO compomentDAO = (ComponentDAO)request.getAttribute(Application.COMPONENT_DAO);
+		ComponentRemote compomentDAO = (ComponentRemote)request.getAttribute(Application.COMPONENT_DAO);
 		try {
 			Component component = compomentDAO.getComponentByID(id);
 			request.setAttribute("component", component);

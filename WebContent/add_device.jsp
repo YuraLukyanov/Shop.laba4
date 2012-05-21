@@ -8,7 +8,7 @@
 <title>Add device</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,ua.edu.ChaliyLukyanov.laba3.model.DAO.*,java.util.List"%>
+<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,java.util.List"%>
 <body>
 	<div id="container">
 		<%@ include file="header.jsp"%>

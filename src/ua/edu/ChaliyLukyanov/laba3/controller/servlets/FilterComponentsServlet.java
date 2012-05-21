@@ -17,7 +17,7 @@ import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.Component.PriceComparator;
 import ua.edu.ChaliyLukyanov.laba3.model.Component.ProducerComparator;
 import ua.edu.ChaliyLukyanov.laba3.model.Component.TitleComparator;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 
 public class FilterComponentsServlet extends HttpServlet
@@ -35,7 +35,7 @@ public class FilterComponentsServlet extends HttpServlet
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
   {
-    ComponentDAO model = (ComponentDAO)request.getAttribute("shop_components");
+    ComponentRemote model = (ComponentRemote)request.getAttribute("shop_components");
     try
     {
       List<Component> components = model.getAllComponents();

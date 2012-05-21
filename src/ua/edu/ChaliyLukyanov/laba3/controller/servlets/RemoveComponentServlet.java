@@ -11,14 +11,14 @@ import org.apache.log4j.Logger;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
 
 public class RemoveComponentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger=Logger.getLogger("Shoplogger");
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		ComponentDAO model = (ComponentDAO) request.getAttribute(Application.COMPONENT_DAO);
+		ComponentRemote model = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
 		try {
 			model.removeComponent(Integer.parseInt(request.getParameter("id_component")));
 			logger.info("Component " + request.getParameter("id_component") + " removes");

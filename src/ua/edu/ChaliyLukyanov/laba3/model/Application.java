@@ -2,6 +2,14 @@ package ua.edu.ChaliyLukyanov.laba3.model;
 
 import java.io.IOException;
 
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import javax.ejb.CreateException;
+import java.rmi.RemoteException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
@@ -11,10 +19,6 @@ import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.DAOFactory;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.DeviceDAO;
 
 public class Application implements ServletRequestListener, ServletContextListener {
 
@@ -26,19 +30,29 @@ public class Application implements ServletRequestListener, ServletContextListen
 	}
 
 	public void requestInitialized(ServletRequestEvent event) {
-		DAOFactory factory = DAOFactory.getDAOFactory();
-		DeviceDAO device = factory.getDeviceDAO();
-		ComponentDAO component = factory.getComponentDAO();
-		event.getServletRequest().setAttribute(DEVICE_DAO, device);
-		event.getServletRequest().setAttribute(COMPONENT_DAO, component);
+		try {
+			Context context_comp = new InitialContext();
+			ComponentHome comp_h = (ComponentHome)context_comp.lookup("java:comp/env/ejb/ComponentBean");
+			ComponentRemote components = (ComponentRemote) comp_h.create();
+			Context context_dev = new InitialContext();
+			DeviceHome dev_h = (DeviceHome)context_dev.lookup("java:comp/env/ejb/DeviceBean");
+			DeviceRemote devices = (DeviceRemote) dev_h.create();
+			event.getServletRequest().setAttribute(DEVICE_DAO, devices);
+			event.getServletRequest().setAttribute(COMPONENT_DAO, components);
+		} catch (NamingException e) {
+			
+		} catch (CreateException e) {
+		
+		} catch (RemoteException e) {
+		
+		}
 	}
 
 	
 	public static void sendErrorRedirect(HttpServletRequest request, HttpServletResponse response, String errorPageURL, String error)
 			throws ServletException, IOException {
 		request.setAttribute("exception", error);
-		RequestDispatcher dispatcher = request
-				.getRequestDispatcher(errorPageURL);
+		RequestDispatcher dispatcher = request.getRequestDispatcher(errorPageURL);
 		dispatcher.forward(request, response);
 	}
 	

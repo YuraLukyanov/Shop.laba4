@@ -10,23 +10,13 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <resource-ref>
-    <res-ref-name>jdbc/shop</res-ref-name>
+    <res-ref-name>jdbc/Oracle</res-ref-name>
     <res-type>javax.sql.DataSouce</res-type>
     <res-auth>Container</res-auth>
   </resource-ref>
   <listener>
     <listener-class>ua.edu.ChaliyLukyanov.laba3.model.Application</listener-class>
   </listener>
-  <servlet>
-    <description></description>
-    <display-name>ShowDevicesServlet</display-name>
-    <servlet-name>ShowDevicesServlet</servlet-name>
-    <servlet-class>ua.edu.ChaliyLukyanov.laba3.controller.servlets.ShowDevicesServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>ShowDevicesServlet</servlet-name>
-    <url-pattern>/showdevices</url-pattern>
-  </servlet-mapping>
   <servlet>
     <description></description>
     <display-name>AddComponentServlet</display-name>
@@ -121,4 +111,17 @@
     <exception-type>java.lang.Exception</exception-type>
       <location>/error.jsp</location>
   </error-page>
+  
+  <ejb-ref>
+        <ejb-ref-name>ejb/ComponentBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+		<home>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentHome</home>
+		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote</remote>
+  </ejb-ref>
+  <ejb-ref>
+        <ejb-ref-name>ejb/DeviceBean</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+		<home>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceHome</home>
+		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceRemote</remote>
+  </ejb-ref>
 </web-app>

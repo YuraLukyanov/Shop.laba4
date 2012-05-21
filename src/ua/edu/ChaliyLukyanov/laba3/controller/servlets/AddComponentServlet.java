@@ -14,7 +14,7 @@ import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchComponentException;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.DAO.ComponentDAO;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
 
 public class AddComponentServlet extends HttpServlet {
 
@@ -24,7 +24,7 @@ public class AddComponentServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		ComponentDAO model = (ComponentDAO) request.getAttribute(Application.COMPONENT_DAO);
+		ComponentRemote model = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
 		String title = request.getParameter("title");
 		String desc = request.getParameter("desc");
 		String producer = request.getParameter("producer");
