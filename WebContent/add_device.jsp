@@ -8,7 +8,7 @@
 <title>Add device</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,java.util.List"%>
+<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.EJB.*,java.util.List,ua.edu.ChaliyLukyanov.laba3.model.Application"%>
 <body>
 	<div id="container">
 		<%@ include file="header.jsp"%>
@@ -19,16 +19,29 @@
 					<br/>
 					<b>Component: </b>
 					<select name="id_component">
-						<c:forEach items="${shop_components.allComponents}" var="comp">
-							<option value="${comp.id}" ${comp.id == param.component ? 'selected' : ''}>${comp.title}</option>
-						</c:forEach>	
+						<%  
+							ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
+							List<Component> components = compHome.findAllComponents();
+							for(Component c : components) {
+						%>		
+								<option value="<%= c.getId()%>"><%= c.getTitle()%></option>
+						<%		
+							}
+
+						%>
 					</select> <br/><br/>
 					<b>Previous device: </b>
 					<select name="id_prev_device">
 						<option value="-1"> </option>
-						<c:forEach items="${shop_devices.allDevices}" var="dev">
-							<option value="${dev.id}" ${dev.id == param.prev ? 'selected' : ''}>${dev.title}</option>
-						</c:forEach>
+						<%
+							DeviceHome deviceHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
+							List<Device> devices = deviceHome.findAllDevices();
+							for(Device d : devices) {
+						%>
+								<option value="<%=d.getId()%>"><%= d.getTitle()%></option>
+						<%
+							}
+						%>
 					</select><br/><br/>
 					<b>Title: </b><input type="text" name="title"/><br/>
 					<p align="center"><button type="submit">Add</button></p>

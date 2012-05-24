@@ -31,20 +31,15 @@ public class Application implements ServletRequestListener, ServletContextListen
 
 	public void requestInitialized(ServletRequestEvent event) {
 		try {
-			Context context_comp = new InitialContext();
-			ComponentHome comp_h = (ComponentHome)context_comp.lookup("java:comp/env/ejb/ComponentBean");
-			ComponentRemote components = (ComponentRemote) comp_h.create();
-			Context context_dev = new InitialContext();
-			DeviceHome dev_h = (DeviceHome)context_dev.lookup("java:comp/env/ejb/DeviceBean");
-			DeviceRemote devices = (DeviceRemote) dev_h.create();
-			event.getServletRequest().setAttribute(DEVICE_DAO, devices);
-			event.getServletRequest().setAttribute(COMPONENT_DAO, components);
+			Context context = new InitialContext();
+			Object compRef = context.lookup("Component");
+			Object devRef = context.lookup("Device");
+			ComponentHome compHome = (ComponentHome) javax.rmi.PortableRemoteObject.narrow(compRef, ComponentHome.class);
+			DeviceHome devHome = (DeviceHome) javax.rmi.PortableRemoteObject.narrow(devRef, DeviceHome.class);
+			event.getServletRequest().setAttribute(DEVICE_DAO, devHome);
+			event.getServletRequest().setAttribute(COMPONENT_DAO, compHome);
 		} catch (NamingException e) {
 			
-		} catch (CreateException e) {
-		
-		} catch (RemoteException e) {
-		
 		}
 	}
 

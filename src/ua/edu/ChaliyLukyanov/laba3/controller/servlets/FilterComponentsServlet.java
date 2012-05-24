@@ -3,22 +3,22 @@ package ua.edu.ChaliyLukyanov.laba3.controller.servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.ServletException;									//??????????
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
-import ua.edu.ChaliyLukyanov.laba3.model.Component;
-import ua.edu.ChaliyLukyanov.laba3.model.Component.PriceComparator;
-import ua.edu.ChaliyLukyanov.laba3.model.Component.ProducerComparator;
-import ua.edu.ChaliyLukyanov.laba3.model.Component.TitleComparator;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
+import ua.edu.ChaliyLukyanov.laba3.model.Comparator;
+import ua.edu.ChaliyLukyanov.laba3.model.Comparator.PriceComparator;
+import ua.edu.ChaliyLukyanov.laba3.model.Comparator.ProducerComparator;
+import ua.edu.ChaliyLukyanov.laba3.model.Comparator.TitleComparator;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
+import javax.ejb.FinderException;
 
 public class FilterComponentsServlet extends HttpServlet
 {
@@ -35,11 +35,11 @@ public class FilterComponentsServlet extends HttpServlet
   protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException
   {
-    ComponentRemote model = (ComponentRemote)request.getAttribute("shop_components");
+    ComponentHome compHome = (ComponentHome)request.getAttribute("shop_components");
     try
     {
-      List<Component> components = model.getAllComponents();
-      Comparator<Component> comparator = null;
+      List<Component> components = compHome.findAllComponents();
+      java.util.Comparator<Component> comparator = null;
       String order = request.getParameter("orderBy");
       String sort = request.getParameter("sortBy");
       String sign = request.getParameter("sign");
@@ -53,12 +53,12 @@ public class FilterComponentsServlet extends HttpServlet
       if (!"none".equals(sort))
       {
         if ("title".equals(sort))
-          comparator = new Component.TitleComparator();
+          comparator = new Comparator.TitleComparator();
         else if ("producer".equals(sort))
-          comparator = new Component.ProducerComparator();
+          comparator = new Comparator.ProducerComparator();
         else if ("price".equals(sort))
-          comparator = new Component.PriceComparator();
-        Collections.sort(components, (Comparator)comparator);
+          comparator = new Comparator.PriceComparator();
+        Collections.sort(components, (java.util.Comparator)comparator);
         if ("desc".equals(order))
           Collections.reverse(components);
       }
@@ -96,15 +96,15 @@ public class FilterComponentsServlet extends HttpServlet
       response.setHeader("Cache-Control", "no-cache");
       response.getWriter().write("<components>" + sb.toString() + "</components>");
     }
-    catch (ShopException e)
-    {
+    catch (ShopException e){
       logger.error(e);
       throw new ShopException(e.getMessage());
     }
-    catch (NumberFormatException e)
-    {
+    catch (NumberFormatException e){
       logger.error(e);
       throw new NumberFormatException("Incorrect value " + e.getMessage());
-    }
+    } catch (FinderException e) {
+		logger.error(e);
+	}
   }
 }

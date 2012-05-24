@@ -9,11 +9,6 @@
     <welcome-file>default.htm</welcome-file>
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
-  <resource-ref>
-    <res-ref-name>jdbc/Oracle</res-ref-name>
-    <res-type>javax.sql.DataSouce</res-type>
-    <res-auth>Container</res-auth>
-  </resource-ref>
   <listener>
     <listener-class>ua.edu.ChaliyLukyanov.laba3.model.Application</listener-class>
   </listener>
@@ -113,15 +108,17 @@
   </error-page>
   
   <ejb-ref>
-        <ejb-ref-name>ejb/ComponentBean</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
+        <ejb-ref-name>ComponentBean</ejb-ref-name>
+        <ejb-ref-type>Entity</ejb-ref-type>
 		<home>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentHome</home>
-		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote</remote>
+		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.Component</remote>
+		<ejb-link>Component</ejb-link>
   </ejb-ref>
   <ejb-ref>
-        <ejb-ref-name>ejb/DeviceBean</ejb-ref-name>
-        <ejb-ref-type>Session</ejb-ref-type>
+        <ejb-ref-name>DeviceBean</ejb-ref-name>
+        <ejb-ref-type>Entity</ejb-ref-type>
 		<home>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceHome</home>
-		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceRemote</remote>
+		<remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.Device</remote>
+		<ejb-link>Device</ejb-link>
   </ejb-ref>
 </web-app>

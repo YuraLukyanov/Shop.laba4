@@ -6,14 +6,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
+
+import javax.ejb.CreateException;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.Device;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceRemote;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 
 
 public class AddDeviceServlet extends HttpServlet {
@@ -22,19 +22,19 @@ public class AddDeviceServlet extends HttpServlet {
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DeviceRemote model = (DeviceRemote) request.getAttribute(Application.DEVICE_DAO);
+		DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
 		try {
 			String title = request.getParameter("title");
 			
 			if ("".equals(title))
 				throw new IllegalArgumentException("Title should be!");
 			
-			model.addDevice(new Device(0, Integer.parseInt(request.getParameter("id_prev_device")), 
-										Integer.parseInt(request.getParameter("id_component")),
-										title));
+			Device dev = devHome.create(new Integer(request.getParameter("id_prev_device")), 
+										new Integer(request.getParameter("id_component")),
+										title);
 			logger.info("Device adds");
-			int id = model.getIdLastDevice();
-			response.sendRedirect(request.getContextPath() + "/shownextleveldevices?id=" + id);
+//			int id = devHome.getIdLastDevice();
+			response.sendRedirect(request.getContextPath() + "/shownextleveldevices?id=" + dev.getId());
 			
 		} catch (ShopException e) {
 			logger.error(e);
@@ -48,6 +48,8 @@ public class AddDeviceServlet extends HttpServlet {
 		} catch (NoSuchDeviceException e){
 			logger.error(e);
 			throw new NoSuchDeviceException(e.getMessage());
+		} catch (CreateException e) {
+			logger.error(e);
 		}
 	}
 

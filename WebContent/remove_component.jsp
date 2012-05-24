@@ -8,7 +8,7 @@
 <title>Remove component</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,java.util.List"%>
+<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.Application,java.util.List,ua.edu.ChaliyLukyanov.laba3.model.EJB.*"%>
 <%@ page errorPage="error.jsp" %>
 <body>
 	<div id="container">
@@ -19,11 +19,16 @@
 				<form action="removecomponent" method="post">
 					<br/><b>Component: </b>
 					<select name="id_component">
-						<c:if test="${!empty shop_components}">
-							<c:forEach items="${shop_components.allComponents}" var="comp">
-								<option value="${comp.id}" title="id">${comp.title}</option>
-							</c:forEach>
-						</c:if>
+							<%
+								ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
+								List<Component> components = compHome.findAllComponents();
+								for (Component comp : components) {
+							%>
+								<option value="<%=comp.getId()%>" title="id"><%=comp.getTitle()%></option>
+							
+							<%
+								}
+							%>
 					</select><br/><br/>
 					<p align="center"><button type="submit">Remove</button></p>
 				</form>

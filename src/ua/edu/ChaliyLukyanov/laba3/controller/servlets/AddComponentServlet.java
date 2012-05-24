@@ -6,25 +6,24 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.log4j.Logger;
+import javax.ejb.CreateException;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
-import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchComponentException;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 
 public class AddComponentServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger=Logger.getLogger("Shoplogger");
+	private static Logger logger = Logger.getLogger("Shoplogger");
 
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
-		ComponentRemote model = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
+		ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
 		String title = request.getParameter("title");
 		String desc = request.getParameter("desc");
 		String producer = request.getParameter("producer");
@@ -55,8 +54,8 @@ public class AddComponentServlet extends HttpServlet {
 				throw new NumberFormatException("Price and weight should be > 0");
 			}
 
-			model.addComponent(new Component(0, title, desc, producer, w, img,	pr));
-			int id = model.getIdLastComponent();
+			compHome.create(title, desc, producer, new Double(w), img,	new Double(pr));
+			int id = compHome.getIdLastComponent();
 			logger.info("Component adds");
 			response.sendRedirect(request.getContextPath() + "/showcomponent?id=" + id);
 		} catch (ShopException e) {
@@ -80,7 +79,9 @@ public class AddComponentServlet extends HttpServlet {
 		} catch (NoSuchComponentException e){
 			logger.error(e);
 			throw new NoSuchDeviceException(e.getMessage());
-		} 
+		} catch (CreateException e) {
+			logger.error(e);
+		}
 	}
 
 }

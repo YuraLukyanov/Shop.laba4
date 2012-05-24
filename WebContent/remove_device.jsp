@@ -8,7 +8,7 @@
 <title>Remove devices</title>
 <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
-<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.*,java.util.List"%>
+<%@ page import="ua.edu.ChaliyLukyanov.laba3.model.Application,java.util.List,ua.edu.ChaliyLukyanov.laba3.model.EJB.*"%>
 <%@ page errorPage="error.jsp" %>
 <body>
 	<div id="container">
@@ -20,13 +20,15 @@
 			<div class="content">
 				<h2 align = "center">Devices:</h2>
 				<form method="post" name="remove_devices" action="removedevices">
-				<c:if test="${!empty shop_devices }">
-					<c:forEach items="${shop_devices.allDevices}" var="dev">
-						<p style="padding-left:${30 * dev.level}px;">
-						<input type="checkbox" name="${dev.id}" value="${dev.id}"/> ${dev.title}<br/>
-						</p>
-					</c:forEach>
-				</c:if>
+					<%
+						DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
+						List<Device> devices = devHome.findAllDevices();
+						for (Device dev : devices) {
+					%>
+							<input type="checkbox" name="<%=dev.getId()%>" value="<%=dev.getId()%>"/><%=dev.getTitle()%><br/>
+					<%
+						}
+					%>
 				<p align="center"><button type="submit">Remove</button></p>
 				</form>
 			</div>

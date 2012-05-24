@@ -27,6 +27,6 @@ create sequence dev_sq start with 1000;
 ALTER TABLE Component ADD PRIMARY KEY (id_component);
 ALTER TABLE Device ADD PRIMARY KEY (id_device);
 ALTER TABLE Device ADD FOREIGN KEY (id_component) REFERENCES Component (id_component) on delete Cascade;
-ALTER TABLE Device ADD CONSTRAINT fk_Self FOREIGN KEY (id_prev) REFERENCES Device (id_device) ON DELETE CASCADE;
+ALTER TABLE Device ADD FOREIGN KEY (id_prev) REFERENCES Device (id_device) ON DELETE CASCADE;
 
 commit;

@@ -8,17 +8,15 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponse; 
 
 import org.apache.log4j.Logger;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
-import ua.edu.ChaliyLukyanov.laba3.model.Component;
-import ua.edu.ChaliyLukyanov.laba3.model.Device;
 import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceRemote;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
+import javax.ejb.FinderException;
 
 public class ShowNextLevelDevicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -26,23 +24,23 @@ public class ShowNextLevelDevicesServlet extends HttpServlet {
 
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DeviceRemote deviceModel = (DeviceRemote) request.getAttribute(Application.DEVICE_DAO);
-		ComponentRemote componentModel = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
+		DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
+		ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
 		try {
 			int id = Integer.parseInt(request.getParameter("id"));
 			if (id != 0) {
-				List<Device> devices = deviceModel.getNextLevelsDeviceByID(id);
+				List<Device> devices = devHome.findNextLevelsDeviceByID(new Integer(id));
 				request.setAttribute("devices", devices);
 				
-				LinkedList<Device> prev_devices = (LinkedList<Device>) deviceModel.getPrevLevelsDeviceByID(id);
+				List<Device> prev_devices = devHome.findPrevLevelsDeviceByID(new Integer(id));
 				request.setAttribute("prev_devices", prev_devices);
 				
-				request.setAttribute("this_device", deviceModel.getDeviceByID(id));
+				request.setAttribute("this_device", devHome.findByPrimaryKey(new Integer(id)));
 				
-				Component component = componentModel.getComponentByID(deviceModel.getDeviceByID(Integer.parseInt(request.getParameter("id"))).getIdComponent());
+				Component component = compHome.findByPrimaryKey(devHome.findByPrimaryKey(new Integer(id)).getIdComponent());
 				request.setAttribute("component", component);
 			} else {
-				List<Device> devices = deviceModel.getFirstLevelsDeviceByID(id);
+				List<Device> devices = devHome.findFirstLevelsDeviceByID(null);
 				request.setAttribute("devices", devices);
 				request.setAttribute("prev_devices", null);
 				request.setAttribute("this_device", null);
@@ -59,6 +57,8 @@ public class ShowNextLevelDevicesServlet extends HttpServlet {
 		}  catch (NoSuchDeviceException e){
 			logger.error(e);
 			throw new NoSuchDeviceException(e.getMessage());
+		} catch (FinderException e) {
+			logger.error(e);
 		}
 	}
 }

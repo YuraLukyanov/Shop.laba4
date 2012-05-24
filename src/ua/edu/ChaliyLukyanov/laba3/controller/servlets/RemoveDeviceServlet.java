@@ -14,19 +14,19 @@ import org.apache.log4j.Logger;
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
-
+import javax.ejb.RemoveException;
 
 public class RemoveDeviceServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger=Logger.getLogger("Shoplogger");
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		DeviceRemote model = (DeviceRemote) request.getAttribute(Application.DEVICE_DAO);
+		DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
 		try {
 			Enumeration<String> names = (Enumeration<String>)request.getParameterNames();
 			while(names.hasMoreElements()) {
-				int id = Integer.parseInt(names.nextElement());
-				model.removeDevice(id);
+				Integer id = new Integer(names.nextElement());
+				devHome.remove(id);
 				logger.info("Device " + id + " removes");
 			}
 			response.sendRedirect(request.getContextPath() + "/remove_device.jsp");
@@ -36,6 +36,8 @@ public class RemoveDeviceServlet extends HttpServlet {
 		} catch (NumberFormatException e) {
 			logger.error(e);
 			throw new NumberFormatException(e.getMessage());
+		} catch (RemoveException e) {
+			logger.error(e);
 		}
 	}
 }

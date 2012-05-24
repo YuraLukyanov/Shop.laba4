@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 
 import ua.edu.ChaliyLukyanov.laba3.model.Application;
-import ua.edu.ChaliyLukyanov.laba3.model.Component;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
-import ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentRemote;
+import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
+import javax.ejb.FinderException;
 
 
 public class ShowComponentsServlet extends HttpServlet {
@@ -23,12 +23,12 @@ public class ShowComponentsServlet extends HttpServlet {
    
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		ComponentRemote model = (ComponentRemote) request.getAttribute(Application.COMPONENT_DAO);
+		ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
 		try {
-			List<Component> components = model.getAllComponents();
-			List<String> producers = model.getDistinctProducers();
+			List<Component> components = compHome.findAllComponents();
+//			List<String> producers = compHome.getDistinctProducers();
 			request.setAttribute("components", components);
-			request.setAttribute("producers", producers);
+//			request.setAttribute("producers", producers);
 			RequestDispatcher dispatcher = request.getRequestDispatcher("/show_components.jsp");
 			dispatcher.forward(request, response);
 		} catch (ShopException e) {
@@ -37,6 +37,8 @@ public class ShowComponentsServlet extends HttpServlet {
 		} catch (NumberFormatException e) {
 			logger.error(e);
 			throw new NumberFormatException(e.getMessage());
+		} catch (FinderException e) {
+			logger.error(e);
 		}
 	}
 }
