@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar id="ejb-jar_ID" version="2.1" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/ejb-jar_2_1.xsd">
+<enterprise-beans>
+   <entity>
+      <display-name>ComponentBean</display-name>
+      <ejb-name>Component</ejb-name>
+      <home>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentHome</home>
+      <remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.Component</remote>
+      <ejb-class>ua.edu.ChaliyLukyanov.laba3.model.EJB.ComponentBean</ejb-class>
+      <persistence-type>Bean</persistence-type>
+      <prim-key-class>java.lang.Integer</prim-key-class>
+      <reentrant>false</reentrant>
+   </entity> 
+   <entity>
+      <display-name>DeviceBean</display-name>
+      <ejb-name>Device</ejb-name>
+      <home>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceHome</home>
+      <remote>ua.edu.ChaliyLukyanov.laba3.model.EJB.Device</remote>
+      <ejb-class>ua.edu.ChaliyLukyanov.laba3.model.EJB.DeviceBean</ejb-class>
+      <persistence-type>Bean</persistence-type>
+      <prim-key-class>java.lang.Integer</prim-key-class>
+      <reentrant>false</reentrant>
+   </entity>    
+</enterprise-beans>
+
+</ejb-jar>
