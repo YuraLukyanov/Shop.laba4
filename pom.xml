@@ -1,0 +1,43 @@
+<project>
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.Netcracker.YuraLukyanov</groupId>
+   <version>1.0</version>
+   <artifactId>shop</artifactId>
+   <packaging>pom</packaging>
+   <name>Shop laba 4</name>
+
+   <modules>
+      <module>ear</module>
+      <module>webapp</module>
+	  <module>ejb</module>
+   </modules>
+   
+    <dependencies>
+	<dependency>
+	    <groupId>javaee</groupId>
+	    <artifactId>javaee-api</artifactId>
+	    <version>5</version>
+	    <scope>provided</scope>
+	</dependency>
+    </dependencies>
+
+    <build>  
+      	<plugins>  
+	    <plugin>  
+	      	<artifactId>maven-compiler-plugin</artifactId>  
+	    	<configuration>  
+	    	    <source>1.5</source>  
+	    	    <target>1.5</target>  
+	    	</configuration>  
+	    </plugin>           
+
+	    <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-ejb-plugin</artifactId>
+		<configuration>
+		    <ejbVersion>2.0</ejbVersion>
+		</configuration>
+	    </plugin>
+	</plugins>
+    </build>
+</project>
