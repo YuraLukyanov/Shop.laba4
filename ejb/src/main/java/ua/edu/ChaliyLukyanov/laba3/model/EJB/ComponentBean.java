@@ -28,23 +28,17 @@ public class ComponentBean implements EntityBean {
 	private double weight;
 	private String img;
 	private double price;
-/*	
-	public int ejbHomeGetIdLastComponent() throws RemoteException, ShopException {
-		try {
-			return currId().intValue();
-		} catch (SQLException e) {
-			throw new ShopException("Can't get last component ID" + e.getMessage());
-		} 
-	}*/
-	
+
+	/**
+	 * Creates a new component's entity.
+	 */
 	public Integer ejbCreate(String title, String description, 
 							String producer, double weight, String img, 
 							double price) throws CreateException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.INSERT_COMPONENT);
 			st.setString(1, title);
 			st.setString(2, description);
@@ -57,20 +51,7 @@ public class ComponentBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_ADD_COMPONENT_TO_DB, e);
 		} finally {
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, null);
 		}
 		this.title = title;
 		this.description = description;
@@ -85,14 +66,16 @@ public class ComponentBean implements EntityBean {
 							String producer, double weight, String img, 
 							double price) throws EJBException, RemoteException { }
 	
+	/**
+	 * Finds all component's entities in the database.
+	 */
 	public List<Integer> ejbFindAllComponents() throws FinderException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		ResultSet row = null;
 		List<Integer> list = new ArrayList<Integer>();
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.GET_ALL_COMPONENTS_ID);
 			row = st.executeQuery();
 			while (row.next()) {
@@ -106,37 +89,19 @@ public class ComponentBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_GET_COMPONENTS_FROM_DB, e);
 		} finally {
-			try {
-				if (row != null) {
-					row.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, row);
 		}
 	}
 	
+	/**
+	 * Finds component's entity by id in the database.
+	 */
 	public Integer ejbFindByPrimaryKey(Integer id) throws FinderException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		ResultSet row = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.FIND_BY_ID_COMPONENT);
 			st.setInt(1,id.intValue());
 			row = st.executeQuery();
@@ -148,40 +113,22 @@ public class ComponentBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_GET_COMPONENT_FROM_DB, e);
 		} finally {
-			try {
-				if (row != null) {
-					row.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, row);
 		}
 	}
 	
     public void ejbActivate() throws EJBException, RemoteException {   }
 	
+	/**
+	 * Loads component's entity from database.
+	 */
     public void ejbLoad() throws EJBException, RemoteException {
         Connection conn = null;
         PreparedStatement stat = null;
         ResultSet res = null;
 		id = (Integer) context.getPrimaryKey();
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
             stat = conn.prepareStatement(Consts.GET_COMPONENT_BY_ID);
                 // id we had gotten from context in the ejbActivate() method
             stat.setInt(1, id);
@@ -199,67 +146,38 @@ public class ComponentBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (res != null) {
-					res.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (stat != null) {
-					stat.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, stat, res);
 		}
 	}
 	
 	public void ejbPassivate() throws EJBException, RemoteException {}
 	
+	/**
+	 * Removes component's entity from database.
+	 */
 	public void ejbRemove() throws EJBException, RemoteException, RemoveException {
         Connection conn = null;
         PreparedStatement stat = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			stat = conn.prepareStatement(Consts.REMOVE_COMPONENT);
 			stat.setInt(1,id);
 			stat.executeUpdate();
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (stat != null) {
-					stat.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, stat, null);
 		}
 	}
 	
+	/**
+	 * Stores component's entity to database.
+	 */
 	public void ejbStore() throws EJBException, RemoteException {
         Connection conn = null;
         PreparedStatement st = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.UPDATE_COMPONENT);
 			st.setString(1, title);
 			st.setString(2, description);
@@ -272,20 +190,7 @@ public class ComponentBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, null);
 		}
 	}
 	
@@ -354,8 +259,7 @@ public class ComponentBean implements EntityBean {
 		PreparedStatement st = null;
 		ResultSet row = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.GET_ID_LAST_COMPONENT);
 			row = st.executeQuery();
 			if (row.next()) {
@@ -374,5 +278,34 @@ public class ComponentBean implements EntityBean {
 				conn.close();
 			}
 		}
+	}
+	
+	private void closeAll(Connection conn, PreparedStatement st, ResultSet row) throws EJBException {
+		try {
+			if (row != null) {
+				row.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
+		}
+		try {
+			if (st != null) {
+				st.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
+		}
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
+		}
+	}
+	
+	private Connection getConnection() throws SQLException {
+		DataSource ds = (DataSource) context.lookup("java:/Oracle");
+		return ds.getConnection();
 	}
 }

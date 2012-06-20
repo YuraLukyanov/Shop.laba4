@@ -14,7 +14,7 @@
 		<%@ include file="header.jsp"%>
 		<div id="main_content">
 			<div class="content">
-				<h2><%= exception.getMessage()%></h2>
+				${param['error']}
 			</div>
 
 			<%@ include file="menu.jsp"%>

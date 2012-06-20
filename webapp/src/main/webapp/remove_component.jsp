@@ -19,16 +19,9 @@
 				<form action="removecomponent" method="post">
 					<br/><b>Component: </b>
 					<select name="id_component">
-							<%
-								ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
-								List<Component> components = compHome.findAllComponents();
-								for (Component comp : components) {
-							%>
-								<option value="<%=comp.getId()%>" title="id"><%=comp.getTitle()%></option>
-							
-							<%
-								}
-							%>
+						<c:forEach items="${components}" var="component">
+							<option value="${component.id}" title="id">${component.title}</option>
+						</c:forEach>
 					</select><br/><br/>
 					<p align="center"><button type="submit">Remove</button></p>
 				</form>

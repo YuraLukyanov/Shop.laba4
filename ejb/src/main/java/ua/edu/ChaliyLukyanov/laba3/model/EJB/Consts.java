@@ -91,7 +91,7 @@ public class Consts {
 
 	public static final String GET_PREV_LEVELS_DEVICE_BY_ID = "select level, id_device, id_component, id_prev, title from device where level > 1 start with id_device = ? connect by prior id_prev=id_device";
 
-	public static final String GET_ID_LAST_DEVICE = "select max(id_device) from device";
+	public static final String GET_ID_LAST_DEVICE = "select dev_sq.currval from device";
 	
 	public static final String UPDATE_DEVICE = "update device set title = ?, id_prev = ?, id_component = ? where id_device = ?";
 

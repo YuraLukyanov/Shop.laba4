@@ -15,11 +15,21 @@ import ua.edu.ChaliyLukyanov.laba3.model.NoSuchDeviceException;
 import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 
+/**
+ * Class is responsible for adding component.
+ *
+ * @author    Yura Lukyanov <lukyanov.yura@gmail.com>
+ * @version   19 June 2012
+ * @since     1.6
+ */
 public class AddComponentServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getLogger("Shoplogger");
-
+	
+	/**
+	 * Gets component's data and creates component.
+	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
@@ -54,34 +64,28 @@ public class AddComponentServlet extends HttpServlet {
 				throw new NumberFormatException("Price and weight should be > 0");
 			}
 
-			Component component = compHome.create(title, desc, producer, new Double(w), img,	new Double(pr));
+			Component component = compHome.create(title, desc, producer, new Double(w), img, new Double(pr));
 //			int id = compHome.getIdLastComponent();
 			logger.info("Component adds");
 			response.sendRedirect(request.getContextPath() + "/showcomponent?id=" + component.getId());
 		} catch (ShopException e) {
 			logger.error(e);
 			response.sendRedirect(request.getContextPath()
-					+ "/add_component.jsp?title=" + title + "&desc=" + desc
-					+ "&prod=" + producer + "&img=" + img + "&pr=" + price
-					+ "&w=" + weight + "&error=" + e.getMessage());
+					+ "/add_component.jsp?error=" + e.getMessage());
 		} catch (NumberFormatException e) {
 			logger.error(e);
 			response.sendRedirect(request.getContextPath()
-					+ "/add_component.jsp?title=" + title + "&desc=" + desc
-					+ "&prod=" + producer + "&img=" + img + "&pr=" + price
-					+ "&w=" + weight + "&error=" + e.getMessage());
+					+ "/add_component.jsp?error=" + e.getMessage());
 		} catch (IllegalArgumentException e) {
 			logger.error(e);
 			response.sendRedirect(request.getContextPath()
-					+ "/add_component.jsp?title=" + title + "&desc=" + desc
-					+ "&prod=" + producer + "&img=" + img + "&pr=" + price
-					+ "&w=" + weight + "&error=" + e.getMessage());
+					+ "/add_component.jsp?error=" + e.getMessage());
 		} catch (NoSuchComponentException e){
 			logger.error(e);
-			throw new NoSuchDeviceException(e.getMessage());
+			response.sendRedirect(request.getContextPath()
+					+ "/add_component.jsp?error=" + e.getMessage());
 		} catch (CreateException e) {
 			logger.error(e);
 		}
 	}
-
 }

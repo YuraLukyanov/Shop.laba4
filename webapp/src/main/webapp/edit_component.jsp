@@ -34,6 +34,9 @@
 						<p align="center"><button type="submit" value="${component.id}" name="id_component">save</button></p>
 					</form>
 				</c:if>
+				<c:if test="${!empty param.error }">
+					<h2>${param.error}</h2>
+				</c:if>
 			</div>
 
 			<%@ include file="menu.jsp"%>

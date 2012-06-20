@@ -18,11 +18,20 @@ import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 import javax.ejb.FinderException;
 
+/**
+ * Class is responsible for showing devices in hierarchy view.
+ *
+ * @author    Yura Lukyanov <lukyanov.yura@gmail.com>
+ * @version   19 June 2012
+ * @since     1.6
+ */
 public class ShowNextLevelDevicesServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger=Logger.getLogger("Shoplogger");
 
-	
+	/**
+	 * Gets level hierarchy of devices from database by parent id.
+	 */		
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
 		ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);

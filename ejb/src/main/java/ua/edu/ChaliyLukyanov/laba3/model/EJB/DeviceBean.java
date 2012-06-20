@@ -26,13 +26,15 @@ public class DeviceBean implements EntityBean {
 	private Integer id_component;
 	private String title;
 
+	/**
+	 * Finds device's entity by id in the database.
+	 */	
 	public Integer ejbFindByPrimaryKey(Integer id) throws FinderException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		ResultSet row = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.FIND_BY_ID_DEVICE);
 			st.setInt(1, id);
 			row = st.executeQuery();
@@ -44,38 +46,19 @@ public class DeviceBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_GET_DEVICE_FROM_DB, e);
 		} finally {
-			try {
-				if (row != null) {
-					row.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, row);
 		}
 	}
-
+	/**
+	 * Loads device's entity from database.
+	 */
     public void ejbLoad() throws EJBException, RemoteException {
         Connection conn = null;
         PreparedStatement stat = null;
         ResultSet res = null;
 		id = (Integer) context.getPrimaryKey();
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
             stat = conn.prepareStatement(Consts.GET_DEVICE_BY_ID);
             stat.setInt(1, id);
             res = stat.executeQuery();
@@ -87,27 +70,7 @@ public class DeviceBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(e);
 		} finally {
-			try {
-				if (res != null) {
-					res.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (stat != null) {
-					stat.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, stat, res);
 		}
 	}
 
@@ -154,13 +117,15 @@ public class DeviceBean implements EntityBean {
     public void ejbActivate() throws EJBException, RemoteException {   }
 
     public void ejbPassivate() throws EJBException, RemoteException {   }	
-	
+
+	/**
+	 * Creates a new device's entity.
+	 */	
 	public Integer ejbCreate(Integer id_prev, Integer id_component, String title) throws CreateException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.INSERT_DEVICE);
 			st.setInt(1, id_prev);
 			st.setInt(2, id_component);
@@ -170,20 +135,7 @@ public class DeviceBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_ADD_DEVICE_TO_DB, e);
 		} finally {
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, null);
 		}
 		this.id_prev = id_prev;
 		this.id_component = id_component;
@@ -193,14 +145,16 @@ public class DeviceBean implements EntityBean {
 
 	public void ejbPostCreate(Integer id_prev, Integer id_component, String title) throws RemoteException { }	
 
+	/**
+	 * Finds all device's entities in the database.
+	 */
 	public List<Integer> ejbFindAllDevices() throws FinderException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		ResultSet row = null;
 		List<Integer> list = new LinkedList<Integer>();
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.GET_ALL_DEVICES_ID);
 			row = st.executeQuery();
 			while (row.next()) {
@@ -214,59 +168,33 @@ public class DeviceBean implements EntityBean {
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_GET_DEVICES_FROM_DB, e);
 		} finally {
-			try {
-				if (row != null) {
-					row.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, row);
 		}
 	}
-	
+
+	/**
+	 * Removes device's entity from database.
+	 */	
 	public void ejbRemove() throws RemoveException, EJBException, RemoteException {
 		Connection conn = null;
 		PreparedStatement st = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.REMOVE_DEVICE);
 			st.setInt(1, id);
 			st.executeUpdate();
 		} catch (SQLException e) {
 			throw new EJBException(Consts.CANT_REMOVE_DEVICE_FROM_DB, e);
 		} finally {
-			try {
-				if (st != null) {
-					st.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {
-				if (conn != null) {
-					conn.close();
-				}
-			} catch (SQLException e) {
-				throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
-			}
+			closeAll(conn, st, null);
 		}
 	}
 
+	/**
+	 * Finds parent devices in hierarchy entity's structure.
+	 *
+	 * @param id id of child device.
+	 */
 	public List<Integer> ejbFindPrevLevelsDeviceByID(Integer id) throws FinderException, EJBException, RemoteException {
 		try {
 			return getLevelDevices(id, Consts.GET_PREV_LEVELS_DEVICE_BY_ID);
@@ -275,6 +203,11 @@ public class DeviceBean implements EntityBean {
 		}		
 	}
 
+	/**
+	 * Finds child devices in hierarchy entity's structure.
+	 *
+	 * @param id id of parent device.
+	 */
 	public List<Integer> ejbFindNextLevelsDeviceByID(Integer id) throws FinderException, EJBException, RemoteException {
 		try {
 			return getLevelDevices(id, Consts.GET_NEXT_LEVEL_DEVICE_BY_ID);
@@ -283,6 +216,9 @@ public class DeviceBean implements EntityBean {
 		}	
 	}
 
+	/**
+	 * Finds root device in hierarchy entity's structure.
+	 */
 	public List<Integer> ejbFindFirstLevelsDeviceByID(Integer id) throws FinderException, EJBException, RemoteException {
 		try {		
 			return getLevelDevices(id, Consts.GET_FIRST_LEVEL_DEVICES);
@@ -291,14 +227,13 @@ public class DeviceBean implements EntityBean {
 		}	
 	}
 
-	private List<Integer> getLevelDevices(Integer id, String sql) throws SQLException {
+	private List<Integer> getLevelDevices(Integer id, String sql) throws SQLException, EJBException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		LinkedList<Integer> ids = new LinkedList<Integer>();
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			ps = conn.prepareStatement(sql);
 			if (id != null) {
 				ps.setInt(1, id);
@@ -308,30 +243,10 @@ public class DeviceBean implements EntityBean {
 				ids.addFirst(rs.getInt(Consts.ID_DEVICE));
 			}
 			return (List<Integer>) ids;
-/*		} catch (SQLException e) {
-			throw new SQLException("Can't show device from database", e);*/
+		} catch (SQLException e) {
+			throw new SQLException("Can't show device from database", e);
 		} finally {
-//			try {
-				if (rs != null) {
-					rs.close();
-				}
-/*			} catch (SQLException e) {
-				throw new SQLException(Consts.CANT_CLOSE_RESULT_SET, e);
-			}
-			try {*/
-				if (ps != null) {
-					ps.close();
-				}
-/*			} catch (SQLException e) {
-				throw new SQLException(Consts.CANT_CLOSE_STATEMENT, e);
-			}
-			try {*/
-				if (conn != null) {
-					conn.close();
-				}
-/*			} catch (SQLException e) {
-				throw new SQLException(Consts.CANT_CLOSE_CONNECTION, e);
-			}*/
+			closeAll(conn, ps, rs);
 		}
 	}	
 	
@@ -340,8 +255,7 @@ public class DeviceBean implements EntityBean {
 		PreparedStatement st = null;
 		ResultSet row = null;
 		try {
-			DataSource ds = (DataSource) context.lookup("java:/Oracle");
-			conn = ds.getConnection();
+			conn = getConnection();
 			st = conn.prepareStatement(Consts.GET_ID_LAST_DEVICE);
 			row = st.executeQuery();
 			if (row.next()) {
@@ -376,5 +290,34 @@ public class DeviceBean implements EntityBean {
 
 	public String getTitle() {
 		return title;
+	}
+	
+	private void closeAll(Connection conn, PreparedStatement st, ResultSet rs) throws EJBException {
+		try {
+			if (rs != null) {
+				rs.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_RESULT_SET, e);
+		}
+		try {
+			if (st != null) {
+				st.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_STATEMENT, e);
+		}
+		try {
+			if (conn != null) {
+				conn.close();
+			}
+		} catch (SQLException e) {
+			throw new EJBException(Consts.CANT_CLOSE_CONNECTION, e);
+		}
+	}
+	
+	private Connection getConnection() throws SQLException {
+		DataSource ds = (DataSource) context.lookup("java:/Oracle");
+		return ds.getConnection();
 	}
 }

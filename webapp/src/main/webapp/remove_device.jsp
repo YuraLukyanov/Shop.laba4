@@ -20,16 +20,10 @@
 			<div class="content">
 				<h2 align = "center">Devices:</h2>
 				<form method="post" name="remove_devices" action="removedevices">
-					<%
-						DeviceHome devHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
-						List<Device> devices = devHome.findAllDevices();
-						for (Device dev : devices) {
-					%>
-							<input type="checkbox" name="<%=dev.getId()%>" value="<%=dev.getId()%>"/><%=dev.getTitle()%><br/>
-					<%
-						}
-					%>
-				<p align="center"><button type="submit">Remove</button></p>
+					<c:forEach items="${devices}" var="device">
+						<input type="checkbox" name="${device.id}" value="${device.id}"/>${device.title}<br/>
+					</c:forEach>
+					<p align="center"><button type="submit">Remove</button></p>
 				</form>
 			</div>
 

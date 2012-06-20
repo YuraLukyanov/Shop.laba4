@@ -17,11 +17,20 @@ import ua.edu.ChaliyLukyanov.laba3.model.ShopException;
 import ua.edu.ChaliyLukyanov.laba3.model.EJB.*;
 import javax.ejb.FinderException;
 
+/**
+ * Class is responsible for showing component by id.
+ *
+ * @author    Yura Lukyanov <lukyanov.yura@gmail.com>
+ * @version   19 June 2012
+ * @since     1.6
+ */
 public class ShowComponentServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger=Logger.getLogger("Shoplogger");
        
-
+	/**
+	 * Gets component from database by id and show it in the view.
+	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ComponentHome compHome = (ComponentHome)request.getAttribute(Application.COMPONENT_DAO);
 		try {

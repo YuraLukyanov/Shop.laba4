@@ -19,29 +19,16 @@
 					<br/>
 					<b>Component: </b>
 					<select name="id_component">
-						<%  
-							ComponentHome compHome = (ComponentHome) request.getAttribute(Application.COMPONENT_DAO);
-							List<Component> components = compHome.findAllComponents();
-							for(Component c : components) {
-						%>		
-								<option value="<%= c.getId()%>"><%= c.getTitle()%></option>
-						<%		
-							}
-
-						%>
+						<c:forEach items="${components}" var="component">
+							<option value="${component.id}">${component.title}</option>
+						</c:forEach>
 					</select> <br/><br/>
 					<b>Previous device: </b>
 					<select name="id_prev_device">
 						<option value="-1"> </option>
-						<%
-							DeviceHome deviceHome = (DeviceHome) request.getAttribute(Application.DEVICE_DAO);
-							List<Device> devices = deviceHome.findAllDevices();
-							for(Device d : devices) {
-						%>
-								<option value="<%=d.getId()%>"><%= d.getTitle()%></option>
-						<%
-							}
-						%>
+						<c:forEach items="${devices}" var="device">
+							<option value="${device.id}">${device.title}</option>
+						</c:forEach>
 					</select><br/><br/>
 					<b>Title: </b><input type="text" name="title"/><br/>
 					<p align="center"><button type="submit">Add</button></p>

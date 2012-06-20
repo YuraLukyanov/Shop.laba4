@@ -85,7 +85,7 @@ function parseMessages(responseXML) {
             table.setAttribute("border", "1");
 			table.style.display = 'table';
 			head();
-
+																							//???
             for (loop = 0; loop < components.childNodes.length; loop++) {
                 var component = components.childNodes[loop];
                 var title = component.getElementsByTagName("title")[0];
